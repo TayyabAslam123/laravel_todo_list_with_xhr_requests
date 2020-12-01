@@ -16,3 +16,5 @@ Route::get('/', function () {
 });
 
 Route::resource('todo','TodoController');
+Route::resource('student','StudentController');
+Route::resource('product','ProductController');

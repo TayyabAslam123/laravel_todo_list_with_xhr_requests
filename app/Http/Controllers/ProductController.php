@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\todo;
-use Exception;
-use Redirect,Response;
-   
+use App\Product;
 
-class TodoController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,10 +14,8 @@ class TodoController extends Controller
      */
     public function index()
     {
-
-        $data=todo::all();
-        //return $data;
-        return view('todos',compact('data'));
+        $data=Product::all();
+        return view('product',compact('data'));
     }
 
     /**
@@ -41,47 +36,26 @@ class TodoController extends Controller
      */
     public function store(Request $request)
     {
-    //     return response()->json([
-    //     'code'=>200, 
-    //     'message'=>'todo Created successfully',
-    //     'data' => ['name'=>$request['name'],'status'=>$request['status']]
-    // ], 200);
-
-        // $var=new todo();
-        // $var->name=$request->name;
-        // $var->status=$request->status;
-        // $todo=$var->save();
-
-        
-
-        // return response()->json([
-        //     'status'=>'success', 
-        //     'message'=>'new todo Created successfully'
-        // ], 200);
-
-        // $todo = todo::updateOrCreate(
-           
-        //     ['name' => $request['name'], 'status' => $request['status']]
-        // );
-        // return Response::json($todo);
+      
+        try{
+            // $v=new Product();
+            // $v->name=$request->name;
+            // $v->price=$request->price;
+            // $v->save();
+            $v = Product::updateOrCreate(['id' => $request->id], [
+                'name' => $request->name,
+                'price' => $request->price
+              ]);
 
 
-
-        $post = todo::updateOrCreate(['id' => $request->id], [
-            'name' => $request->name,
-            'status' => $request->status
-          ]);
-
-          try{
-  return response()->json(['code'=>200, 'message'=>'Post Created successfully','data' => $post], 200);
-
-
-}catch(\Exception $e)
-  
-{
-    return Response::json(['title'=>'Unable to Enroll Student','content'=>$e->getMessage()]);
-  
-}
+        return response()->json(['code'=>200, 'message'=>'Product Created successfully','data' => $v], 200);
+    
+    }catch(Exception $e)
+      
+    {
+        return response()->json(['code'=>500,'content'=>$e->getMessage()],500);
+      
+    }
     }
 
     /**
@@ -103,7 +77,7 @@ class TodoController extends Controller
      */
     public function edit($id)
     {
-        return $id;
+        //
     }
 
     /**
@@ -115,7 +89,7 @@ class TodoController extends Controller
      */
     public function update(Request $request, $id)
     {
-      
+        //
     }
 
     /**
@@ -126,12 +100,13 @@ class TodoController extends Controller
      */
     public function destroy($id)
     {
-        $user = todo::where('id',$id)->delete();
-        return Response::json(
+         
+        $user = Product::where('id',$id)->delete();
+
+        return response()->json(
             ['status'=>'success',
-              'message'=>'your todo is deleted'
+              'message'=>'your product is deleted'
             ]
         );
-
     }
 }

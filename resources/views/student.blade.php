@@ -19,21 +19,18 @@
   
 </head>
 <body>
-<h1 style="color:red;">MY TODO'S LIST</h1>
+<h1 style="color:red;">STUDENTS</h1>
 
 <div class="jumbotron">
-<form action="{{url('todo')}}" method="POST" id="f1">
+<form action="{{url('student')}}" method="POST" id="f1" >
     @csrf
     <div class="form-group">
-    
-      <input type="text" class="form-control" placeholder="Enter Your Todo" id="t1" name="name">
+    <input type="text" class="form-control" placeholder="Enter Your Todo" id="t1" name="name">
     </div>
     <div class="form-group">
-   
-      <input type="text" class="form-control" placeholder="What Is Current Status " id="t2" name="status">
+   <input type="text" class="form-control" placeholder="Roll No " id="t2" name="roll_no">
     </div>
-   
-    <button type="submit" class="btn btn-primary">ADD NOW</button>
+  <button type="submit" class="btn btn-primary">ADD NOW</button>
   </form>
 </div>
 
@@ -42,8 +39,8 @@
     
 <div class="card" id="todo_{{$item->id}}">
  
-    <h4><b>TODO: </b>{{$item->name}}</h4>
-    <h6><b>STATUS: </b>{{$item->status}}</h6>
+    <h4><b>NAME: </b>{{$item->name}}</h4>
+    <h6><b>ROLL NO: </b>{{$item->roll_no}}</h6>
     <a href="javascript:void(0)" id="delete-user" data-id="{{$item->id}}" class="btn btn-danger delete-user ">Delete</a>
 </div>   
 @endforeach
@@ -58,52 +55,49 @@
 $('#f1').submit(function(e){
 
 e.preventDefault();
-
+//data
 var name=$('#t1').val();
-var status=$('#t2').val();
+var roll_no=$('#t2').val();
 var url=$(this).attr('action');
-
-
+//send request
 var submit_r=  $.ajax({
             type: "POST",
             url: url,
             dataType: "json",
-          //  data: $('form').serialize(),
-            data: {
-                "_token": "{{ csrf_token() }}",
-                name:name ,status:status},
+           data: $('form').serialize(),
+          
           });
 
+//success
 submit_r.done(function(data){
+alertify.success('Your Student Saved');
+$('#mylist').prepend('<div class="card" id="todo_'+data.data.id+'"><h4><b>TODO: </b>'+data.data.name+'</h4> <h6><b>STATUS: </b>'+data.data.roll_no+'</h6>  <a href="javascript:void(0)" id="delete-user" data-id="'+data.data.id+'" class="btn btn-danger delete-user">Delete</a></div>');
+
+   });
 
 
- 
-// let dataa=JSON.parse(data);
-alertify.success('Todo Saved');
-// alertify
-//   .alert("This is an alert dialog.", function(){
-//     alertify.message('OK');
-//   });
-
-$('#mylist').prepend('<div class="card" id="todo_'+data.data.id+'"><h4><b>TODO: </b>'+data.data.name+'</h4> <h6><b>STATUS: </b>'+data.data.status+'</h6>  <a href="javascript:void(0)" id="delete-user" data-id="'+data.data.id+'" class="btn btn-danger delete-user">Delete</a></div>');
-
-// $('#mylist').prepend('<div class="card" id="todo_'+data.id+'"><h4><b>TODO: </b>'+data.name+'</h4><h6><b>STATUS: </b>'+data.status+'</h6><a href="javascript:void(0)" id="delete-user" data-id="+'data.id'+" class="btn btn-danger delete-user">Delete</a></div>');
-});
-
-submit_r.fail(function (jqXHR, textStatus, errorThrown){
+//fail   
+submit_r.fail(function (xhr,status,error){
   
-        // Log the error to the console
-        //alertify.alert(errorThrown);
-        alertify.error(errorThrown);
+  console.log(error);
+  console.log(status);
+  console.log(xhr);
+  console.log(xhr.responseJSON.content);
+
+        alertify.error(error);
+      // alertify.error(xhr.responseJSON.content);
         console.error(
             "The following error occurred: "+
             textStatus, errorThrown
-        );
-    });
-
-
-
+        ); 
 });
+
+});//
+
+
+
+
+
 
 
 
@@ -115,22 +109,29 @@ submit_r.fail(function (jqXHR, textStatus, errorThrown){
  
         $.ajax({
             type: "DELETE",
-               data: {
+            url: "{{ url('student')}}"+'/'+user_id,
+            data: {
                 "_token": "{{ csrf_token() }}",
               },
           
 
-            url: "{{ url('todo')}}"+'/'+user_id,
+        
+
             success: function (data) {
                 $("#todo_"+user_id).remove();
-                alertify.success('Todo Deleted');
+                alertify.success('Student Deleted');
             },
-            error: function (data) {
-                console.log('Error:', data);
+            error: function (data,textStatus,xhr) {
+              alertify.error(xhr);
+              console.log('Error:', data);
+              console.log('Error:', textStatus);
+                console.log('Error:', xhr);
             }
         });
        }
-    });   
+
+
+    });  
   
 </script>
 

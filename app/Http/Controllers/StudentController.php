@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\todo;
+use Illuminate\Support\Facades\Validator;
+use App\Student;
 use Exception;
 use Redirect,Response;
-   
 
-class TodoController extends Controller
+class StudentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,10 +17,9 @@ class TodoController extends Controller
      */
     public function index()
     {
-
-        $data=todo::all();
-        //return $data;
-        return view('todos',compact('data'));
+        $data=Student::all();
+        // return $data;
+        return view('student',compact('data'));
     }
 
     /**
@@ -41,47 +40,51 @@ class TodoController extends Controller
      */
     public function store(Request $request)
     {
-    //     return response()->json([
-    //     'code'=>200, 
-    //     'message'=>'todo Created successfully',
-    //     'data' => ['name'=>$request['name'],'status'=>$request['status']]
-    // ], 200);
+    
+  
+     //validation on email
+     $validator = Validator::make($request->all(), [
+        'name' => 'required',
+        'roll_no'=>'required'
+         ]);
+  
+      if ($validator->fails()) {
+               return response(['code'=>500,'content'=>$validator->errors()->first()],500);
+       }
 
-        // $var=new todo();
-        // $var->name=$request->name;
-        // $var->status=$request->status;
-        // $todo=$var->save();
+try{
+        $v=new Student();
+        $v->name=$request->name;
+        $v->roll_no=$request->roll_no;
+        $v->save();
+    return response()->json(['code'=>200, 'message'=>'Student Created successfully','data' => $v], 200);
 
-        
-
-        // return response()->json([
-        //     'status'=>'success', 
-        //     'message'=>'new todo Created successfully'
-        // ], 200);
-
-        // $todo = todo::updateOrCreate(
-           
-        //     ['name' => $request['name'], 'status' => $request['status']]
-        // );
-        // return Response::json($todo);
-
-
-
-        $post = todo::updateOrCreate(['id' => $request->id], [
-            'name' => $request->name,
-            'status' => $request->status
-          ]);
-
-          try{
-  return response()->json(['code'=>200, 'message'=>'Post Created successfully','data' => $post], 200);
-
-
-}catch(\Exception $e)
+}catch(Exception $e)
   
 {
-    return Response::json(['title'=>'Unable to Enroll Student','content'=>$e->getMessage()]);
+    return response()->json(['code'=>500,'content'=>$e->getMessage()],500);
   
 }
+
+
+//         try{
+//         $post = Student::updateOrCreate(
+//             ['id' => $request->id], 
+//             [
+//             'name' => $request->name,
+//             'roll_no' => $request->roll_no
+//           ]
+//         );
+
+//         return response()->json(['code'=>200, 'message'=>'Post Created successfully','data' => $post], 200);
+
+
+// }catch(\Exception $e)
+  
+// {
+//     return Response::json(['title'=>'Unable to Enroll Student','content'=>$e->getMessage()]);
+  
+// }
     }
 
     /**
@@ -103,7 +106,7 @@ class TodoController extends Controller
      */
     public function edit($id)
     {
-        return $id;
+        //
     }
 
     /**
@@ -115,7 +118,7 @@ class TodoController extends Controller
      */
     public function update(Request $request, $id)
     {
-      
+        //
     }
 
     /**
@@ -126,12 +129,13 @@ class TodoController extends Controller
      */
     public function destroy($id)
     {
-        $user = todo::where('id',$id)->delete();
+        
+        $user = Student::where('id',$id)->delete();
+
         return Response::json(
             ['status'=>'success',
               'message'=>'your todo is deleted'
             ]
         );
-
     }
 }
