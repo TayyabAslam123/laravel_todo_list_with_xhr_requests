@@ -1,3 +1,4 @@
+@include('loader')
 <!DOCTYPE html>
 <html lang="en">
 

@@ -37,6 +37,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
       
+        return $request;
         try{
             // $v=new Product();
             // $v->name=$request->name;
