@@ -79,17 +79,18 @@ $('#mylist').prepend('<div class="card" id="todo_'+data.data.id+'"><h4><b>TODO: 
 //fail   
 submit_r.fail(function (xhr,status,error){
   
-  console.log(error);
-  console.log(status);
-  console.log(xhr);
-  console.log(xhr.responseJSON.content);
+  // console.log(error);
+  // console.log(status);
+  // console.log(xhr);
+   console.log(xhr.responseJSON.content);
 
-        alertify.error(error);
+alertify.error(xhr.responseJSON.content);
+       // alertify.error(error);
       // alertify.error(xhr.responseJSON.content);
-        console.error(
-            "The following error occurred: "+
-            textStatus, errorThrown
-        ); 
+        // console.error(
+        //     "The following error occurred: "+
+        //     textStatus, errorThrown
+        // ); 
 });
 
 });//
